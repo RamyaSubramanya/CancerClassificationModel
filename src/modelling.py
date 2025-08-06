@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from src.pipeline import read_and_preprocess, split_train_test
+from src.pipeline import read_and_split
 import pandas as pd
 import sklearn
 from sklearn.linear_model import LogisticRegression
@@ -22,8 +22,7 @@ def model_and_evaluate(model_name):
     Returns:
         prints the accuracy of the model
     """
-    X, y = read_and_preprocess()
-    X_train, X_test, y_train, y_test = split_train_test(X, y)
+    X_train, X_test, y_train, y_test = read_and_split()
 
     #choose the model (LogisticRegression, RandomForest, GradientBoosting)
     if model_name=='LogisticRegression':

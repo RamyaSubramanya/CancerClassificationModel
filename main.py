@@ -2,10 +2,11 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '.')))
 
-from src.pipeline import read_and_preprocess, split_train_test
+from src.pipeline import read_and_split
 from src.modelling import model_and_evaluate
 
 def main():
+    X_train, X_test, y_train, y_test = read_and_split()
     model_name = input('Choose model name from one of the three options:\n'
                        '1. LogisticRegression\n'
                        '2. RandomForestClassifier\n'
