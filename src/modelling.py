@@ -10,6 +10,8 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import accuracy_score
 import warnings
 warnings.filterwarnings('ignore')
+import joblib
+from azureml.core import Run
 
 
 def model_and_evaluate(model_name):
@@ -43,4 +45,17 @@ def model_and_evaluate(model_name):
     #check performance of the model
     accuracy = round(accuracy_score(y_test, predictions),2)*100
     # print(f'Accuracy is:{accuracy}')
+    joblib.dump(model, 'outputs/model.pkl')
+    run = Run.get_context()
+    run.log("accuracy", accuracy)
+    import json
+    os.makedirs("outputs", exist_ok=True)  # Ensure directory exists
+    with open("outputs/metrics.json", "w") as f:
+        json.dump({"accuracy": accuracy}, f)
+
     return accuracy, predictions
+
+if __name__ == "__main__":
+    model_name = 'LogisticRegression'  # or make this dynamic via argparse if needed
+    accuracy, predictions = model_and_evaluate(model_name)
+    print(f"Model Accuracy: {accuracy}")

@@ -1,0 +1,22 @@
+name: breast-cancer-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+      - ipykernel
+      - pandas
+      - numpy
+      - matplotlib
+      - seaborn
+      - scikit-learn
+      - xgboost
+      - tensorflow
+      - keras
+      - azure-ai-ml
+      - azure-ml-component
+      - azureml-core
+      - joblib
+

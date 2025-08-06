@@ -1,0 +1,14 @@
+name: breast-cancer-endpoint
+endpoint_type: online
+auth_mode: key
+
+deployments:
+  - name: classifier-v1
+    model: azureml:my-model@latest
+    environment: azureml:my-aml-env@latest
+    code_configuration:
+      code: ./src
+      scoring_script: score.py
+    instance_type: Standard_DS2_v2
+    instance_count: 1
+

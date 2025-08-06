@@ -1,0 +1,11 @@
+experiment_name: breast-cancer-train
+code: ./src
+command: >-
+  python modelling.py
+environment: azureml:my-aml-env@latest
+compute: ComputeCluster0608
+outputs:
+  model_folder:
+    mode: upload
+    path: ./outputs
+
