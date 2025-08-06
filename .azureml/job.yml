@@ -1,11 +1,10 @@
-experiment_name: breast-cancer-train
-code: ./src
-command: >-
-  python modelling.py
-environment: azureml:my-aml-env@latest
+experiment_name: breast-cancer-training
+code: ./src  # 👈 make sure this path is correct relative to root of repo
+command: >
+  python modelling.py LogisticRegression
+environment: 
+  environment.yml
 compute: ComputeCluster0608
-outputs:
-  model_folder:
-    mode: upload
-    path: ./outputs
+description: Training job for breast cancer classification
+display_name: breast-cancer-train-job
 
