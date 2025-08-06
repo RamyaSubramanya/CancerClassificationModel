@@ -1,10 +1,11 @@
 experiment_name: breast-cancer-training
-code: ./src  # 👈 make sure this path is correct relative to root of repo
+code: ../src  # 👈 make sure this path is correct relative to root of repo
 command: >
-  python modelling.py LogisticRegression
+  python modelling.py
 environment: 
-  environment.yml
-compute: ComputeCluster0608
+  conda_file: environment.yml
+  image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04:20230626.v1
+compute: azureml:ComputeCluster0608
 description: Training job for breast cancer classification
 display_name: breast-cancer-train-job
 
