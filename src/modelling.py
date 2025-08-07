@@ -12,6 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 import joblib
 from azureml.core import Run
+import json
 
 
 def model_and_evaluate(model_name):
@@ -45,11 +46,13 @@ def model_and_evaluate(model_name):
     #check performance of the model
     accuracy = round(accuracy_score(y_test, predictions),2)*100
     # print(f'Accuracy is:{accuracy}')
+    
+    os.makedirs("outputs", exist_ok=True)  # Ensure directory exists
     joblib.dump(model, 'outputs/model.pkl')
+    
     run = Run.get_context()
     run.log("accuracy", accuracy)
-    import json
-    os.makedirs("outputs", exist_ok=True)  # Ensure directory exists
+    
     with open("outputs/metrics.json", "w") as f:
         json.dump({"accuracy": accuracy}, f)
 
