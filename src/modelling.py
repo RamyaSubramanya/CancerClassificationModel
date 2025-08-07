@@ -14,6 +14,7 @@ import joblib
 from azureml.core import Run
 import json
 import argparse
+from azureml.core import Run
 
 def model_and_evaluate():
     """
@@ -44,8 +45,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--output_path', type=str, default='outputs/model.pkl')
     args = parser.parse_args()
-    model_name = 'LogisticRegression'
     accuracy, predictions, model = model_and_evaluate()
     os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
     joblib.dump(model, args.output_path)
+    
+    # ✅ Upload model file to Azure ML output
+    run = Run.get_context()
+    run.upload_file(name='model_output/model.pkl', path_or_stream=args.output_path)
+    
     print(f"Model Accuracy: {accuracy}")
