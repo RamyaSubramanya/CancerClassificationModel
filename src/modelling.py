@@ -13,52 +13,39 @@ warnings.filterwarnings('ignore')
 import joblib
 from azureml.core import Run
 import json
+import argparse
 
-
-def model_and_evaluate(model_name):
+def model_and_evaluate():
     """
-    Build model and evaluate the model against the error metrics
+    Build Logistic Regression model and evaluate the model against the error metrics
 
-    Args:
-        model_name (str): Runs the algorithm based on the model name
-    
     Returns:
         prints the accuracy of the model
     """
     X_train, X_test, y_train, y_test = read_and_split()
 
-    #choose the model (LogisticRegression, RandomForest, GradientBoosting)
-    if model_name=='LogisticRegression':
-        model = LogisticRegression()
-    elif model_name=='RandomForest':
-        model = RandomForestClassifier()
-    elif model_name=='GradientBoosting':
-        model = GradientBoostingClassifier()
-    
-    print(f'Model that you selected is {model_name}')
-    #fit the model on train data
+    model = LogisticRegression()
     model.fit(X_train, y_train)
-
-    #predictions on test data 
     predictions = model.predict(X_test)
     print("Predictions have been made.")
+    print(f'Model that you selected is {model}')
     
     #check performance of the model
     accuracy = round(accuracy_score(y_test, predictions),2)*100
-    # print(f'Accuracy is:{accuracy}')
-    
-    os.makedirs("outputs", exist_ok=True)  # Ensure directory exists
-    joblib.dump(model, 'outputs/model.pkl')
     
     run = Run.get_context()
     run.log("accuracy", accuracy)
-    
     with open("outputs/metrics.json", "w") as f:
         json.dump({"accuracy": accuracy}, f)
 
-    return accuracy, predictions
+    return accuracy, predictions, model
 
 if __name__ == "__main__":
-    model_name = 'LogisticRegression'  # or make this dynamic via argparse if needed
-    accuracy, predictions = model_and_evaluate(model_name)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output_path', type=str, default='outputs/model.pkl')
+    args = parser.parse_args()
+    model_name = 'LogisticRegression'
+    accuracy, predictions, model = model_and_evaluate()
+    os.makedirs(os.path.dirname(args.output_path), exist_ok=True)
+    joblib.dump(model, args.output_path)
     print(f"Model Accuracy: {accuracy}")
