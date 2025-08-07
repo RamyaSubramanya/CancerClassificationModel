@@ -3,7 +3,7 @@ name: Train and Deploy on Azure ML
 on:
   push:
     branches:
-      - main  # or your main branch
+      - main  # Adjust if needed
 
 jobs:
   build-and-deploy:
@@ -32,6 +32,24 @@ jobs:
       run: |
         az ml job create \
           --file .azureml/job.yml \
+          --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
+
+    - name: Get Latest Job ID
+      id: get-job-id
+      run: |
+        JOB_ID=$(az ml job list \
+          --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
+          --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+          --query "[0].name" -o tsv)
+        echo "job_id=$JOB_ID" >> $GITHUB_OUTPUT
+
+    - name: Download model from Azure ML job output
+      run: |
+        az ml job download \
+          --name ${{ steps.get-job-id.outputs.job_id }} \
+          --output-name model_output \
+          --download-path ./outputs \
           --workspace-name ${{ secrets.AZURE_WORKSPACE_NAME }} \
           --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }}
 
